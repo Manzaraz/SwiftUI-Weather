@@ -8,32 +8,17 @@
 import SwiftUI
 
 struct ContentView: View {
+    @State private var isNight = false
+    
     var body: some View {
         ZStack {
-            LinearGradient(gradient: Gradient(colors: [.blue, Color("lightBlue")]),
-                           startPoint: .topLeading,
-                           endPoint: .bottomTrailing)
-                .ignoresSafeArea(edges: .all)
+            BackgroundView(isNight: $isNight)
             
             VStack {
-                Text("Cupertino, CA")
-                    .font(.system(size: 32, weight: .medium, design: .default))
-                    .foregroundStyle(.white)
-                    .padding()
+                CityTextView(cityName: "Cupertino, CA")
                 
-                VStack(spacing: 10) {
-                    Image(systemName: "cloud.sun.fill")
-                        .renderingMode(.original)
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .frame(width: 180, height: 180)
-                        
-                    Text("32º")
-                        .font(.system(size: 70, weight: .medium))
-                        .foregroundStyle(.white)
-                }
-                .padding(.bottom, 40)
-                
+                MainWeatherStatusView(imageName: isNight ? "moon.stars.fill" : "cloud.sun.fill",
+                                      temperature: 36)
                 
                 HStack (spacing: 20) {
                     WeatherDayView(dayOfWeek: "TUE",
@@ -51,11 +36,18 @@ struct ContentView: View {
                     WeatherDayView(dayOfWeek: "SAT",
                                    imageName: "cloud.sun.rain.fill",
                                    temperature: 25)
-                    
                 }
                 
                 Spacer()
                     
+                Button {
+                    isNight.toggle()
+                } label: {
+                    WeatherButton(title: "Change Day Time", textColor: .blue, backgroundColor: .white)
+                }
+                
+                Spacer()
+
             }
         }
     }
@@ -89,3 +81,47 @@ struct WeatherDayView: View {
         }
     }
 }
+
+struct BackgroundView: View {
+    @Binding var isNight: Bool
+
+    var body: some View {
+        LinearGradient(gradient: Gradient(colors: [isNight ? .black : .blue, isNight ? .gray : Color("lightBlue")]),
+                       startPoint: .topLeading,
+                       endPoint: .bottomTrailing)
+        .ignoresSafeArea(edges: .all)
+    }
+}
+
+struct CityTextView: View {
+    var cityName: String
+    
+    var body: some View {
+        Text(cityName)
+            .font(.system(size: 32, weight: .medium, design: .default))
+            .foregroundStyle(.white)
+            .padding()
+    }
+}
+
+struct MainWeatherStatusView: View {
+    var imageName: String
+    var temperature: Int
+    
+    var body: some View {
+        VStack(spacing: 10) {
+            Image(systemName: imageName)
+                .renderingMode(.original)
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .frame(width: 180, height: 180)
+                
+            Text("\(temperature)º")
+                .font(.system(size: 70, weight: .medium))
+                .foregroundStyle(.white)
+        }
+        .padding(.bottom, 40)
+    }
+}
+
+

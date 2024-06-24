@@ -44,12 +44,11 @@ struct ContentView: View {
                     isNight.toggle()
                 } label: {
                     WeatherButton(title: "Change Day Time", 
-                                  textColor: .white,
-                                  backgroundColor: .mint)
+                                  textColor: .blue,
+                                  backgroundColor: .white)
                 }
                 
                 Spacer()
-
             }
         }
     }
